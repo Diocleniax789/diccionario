@@ -16,20 +16,24 @@ int main(){
     char *texto, diccionario_completo[500][20];
     int cant_caracteres = 0, cant_palabras_separadas = 0,cantidad_palabras_diccionario,i;
     struct palabras *todas_las_palabras;
+    struct palabras *palabras_no_encontradas;
 
     texto = carga(&cant_caracteres);
     todas_las_palabras = separa(texto,cant_caracteres,&cant_palabras_separadas);
     cantidad_palabras_diccionario = diccionario(diccionario_completo);
+    palabras_no_encontradas = corrector(todas_las_palabras,cant_palabras_separadas,diccionario_completo,cantidad_palabras_diccionario);
 
-   /* for(i = 0; i < cant_palabras_separadas; i++){
-        printf("\n Palabra: %s",todas_las_palabras[i].pal);
-        printf("\n Posicion: %i",todas_las_palabras[i].pos);
-        printf("\n");
-    }*/
+    system("cls");
 
-   /* for(i = 0; i < cantidad_palabras_diccionario; i++){
-        printf("\n  - Palabra nro %i: %s",i + 1,diccionario_completo[i]);
-    } */
+    printf("\n *** LISTADO DE TODAS LAS PALABRAS NO ENCONTRADAS EN EL DICCIONARIO ***");
+    printf("\n ======================================================================\n");
+    for(i = 0; strcmp(palabras_no_encontradas[i].pal,"*****") != 0; i++){
+        printf(" - Palabra: %s",palabras_no_encontradas[i].pal);
+        printf(" - Posicion: %i",palabras_no_encontradas[i].pos);
+        printf("\n ------------------------------------------------- \n");
+    }
+
+    system("pause");
 
     return 0;
 }
@@ -119,5 +123,40 @@ int diccionario(char diccionario_completo[500][20]){
 
     return contador_palabras_cargadas;
 
+}
+
+struct palabras * corrector(struct palabras *todas_las_palabras,int cant_palabras_separadas,char diccionario_completo[500][20], int cantidad_palabras_diccionario){
+    int i, pos, flag, cant_pal_no_enc_guardada = 0;
+    static struct palabras palabras_no_encontradas[500];
+    for(i = 0; i < cant_palabras_separadas; i++){
+        flag = 0;
+        pos = 0;
+        do{
+            if(strcmp(todas_las_palabras[i].pal,diccionario_completo[pos]) == 0){
+                flag = 1;
+                break;
+            } else{
+                pos++;
+            }
+        } while(pos < cantidad_palabras_diccionario && flag == 0);
+        if(flag == 1){
+            Sleep(1000);
+            printf("\n x Palabra encontrada x \n");
+        } else{
+            Sleep(1000);
+            printf("\n * Palabra no encontrada. Se la almacenara * \n");
+            strcpy(palabras_no_encontradas[cant_pal_no_enc_guardada].pal,todas_las_palabras[i].pal);
+            palabras_no_encontradas[cant_pal_no_enc_guardada].pos = todas_las_palabras[i].pos;
+            cant_pal_no_enc_guardada++;
+        }
+    }
+
+    strcpy(palabras_no_encontradas[cant_pal_no_enc_guardada].pal,"*****");
+
+    printf("\n");
+    printf("\n * TODAS LAS PALABRAS NO ENCONTRADAS YA FUERON GUARDADAS CON EXITO! * \n");
+    printf("\n");
+
+    return palabras_no_encontradas;
 }
 
