@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <windows.h>
-#include <ctype.h>
 #include <string.h>
 
 struct palabras{
@@ -14,12 +13,13 @@ int diccionario(char[500][20]);
 struct palabras * corrector(struct palabras*,int,char dic[500][20],int);
 
 int main(){
-    char *texto;
-    int cant_caracteres = 0, cant_palabras_separadas = 0,i;
+    char *texto, diccionario_completo[500][20];
+    int cant_caracteres = 0, cant_palabras_separadas = 0,cantidad_palabras_diccionario,i;
     struct palabras *todas_las_palabras;
 
     texto = carga(&cant_caracteres);
     todas_las_palabras = separa(texto,cant_caracteres,&cant_palabras_separadas);
+    cantidad_palabras_diccionario = diccionario(diccionario_completo);
 
    /* for(i = 0; i < cant_palabras_separadas; i++){
         printf("\n Palabra: %s",todas_las_palabras[i].pal);
@@ -27,6 +27,9 @@ int main(){
         printf("\n");
     }*/
 
+   /* for(i = 0; i < cantidad_palabras_diccionario; i++){
+        printf("\n  - Palabra nro %i: %s",i + 1,diccionario_completo[i]);
+    } */
 
     return 0;
 }
@@ -67,7 +70,7 @@ struct palabras * separa(char *texto,int cant_caracteres,int *cant_palabras_sepa
                 strcpy(todas_las_palabras[*cant_palabras_separadas].pal,palabra);
                 todas_las_palabras[*cant_palabras_separadas].pos = pos;
                 (*cant_palabras_separadas)++;
-                pos++; // a la primera palabra formada luego de asignar la primera posicion se incrementa
+                pos++; // a la primera palabra formada luego de asignar la primera posicion se la incrementa nuevamente
             }
 
             // reinicializa el arreglo de palabra para volver a utilizarlo
@@ -75,13 +78,46 @@ struct palabras * separa(char *texto,int cant_caracteres,int *cant_palabras_sepa
                 palabra[k] = 0;
             }
 
-            pos++; // en caso de que no se cumpla la condicion igualmente se incrementa, esto incrementa por posicion
+            pos++; // en caso de que no se cumpla la condicion igualmente se incrementa otra vez, esto incrementa por posicion
         }
     }
 
     printf("\n SEPARANDO EL TEXTO EN PALABRAS...\n");
     Sleep(2000);
     printf("\n * TEXTO SEPARADO CON EXITO * \n");
+    printf("\n");
+
+
+    system("pause");
+    system("cls");
 
     return todas_las_palabras;
 }
+
+int diccionario(char diccionario_completo[500][20]){
+    int i,contador_palabras_cargadas = 0;
+    char palabra[20];
+
+    for(i = 0; i < 500; i++){
+        system("cls");
+        fflush(stdin);
+        printf("\n # Para dejar la carga, solamente ingrese '*' # \n");
+        printf("\n - Carga del diccionario - \n");
+        printf("\n");
+        printf("\n - Palabra nro %i",i + 1);
+        printf("\n + Escriba la palabra: ");
+        scanf("%s",palabra);
+        if(strcmp(palabra,"*") != 0){
+            strcpy(diccionario_completo[i],palabra);
+            contador_palabras_cargadas++;
+        } else{
+            break;
+        }
+    }
+
+    printf("\n * DICCIONARIO CARGADO * \n");
+
+    return contador_palabras_cargadas;
+
+}
+
